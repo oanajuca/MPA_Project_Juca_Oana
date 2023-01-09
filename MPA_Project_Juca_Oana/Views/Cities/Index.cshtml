@@ -1,0 +1,86 @@
+﻿@model MPA_Project_Juca_Oana.Models.ViewModels.CityIndexData
+
+@{
+    ViewData["Title"] = "Cities";
+}
+
+<h1>Cities</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>City Name</th>
+            <th>Stadiums</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.City) {
+            {
+                string selectedRow = "";
+                if (item.ID == (int?)ViewData["CityID"])
+                {
+                    selectedRow = "success";
+                }
+                <tr class="@selectedRow">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CityName)
+                    </td>
+
+                    <td>
+                        @{
+                            foreach (var stadium in item.StadiumByCity)
+                            {
+                                @stadium.Stadium.ID @: @stadium.Stadium.Name <br />
+                            }
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="Index" asp-route-id="@item.ID">Select</a> |
+                        <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    </td>
+                </tr>
+            }
+
+}
+    </tbody>
+</table>
+@if (Model.Stadiums != null)
+{
+    <h3>Stadiums by Selected City</h3>
+    <table class="table">
+        <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Team</th>
+            <th>Price</th>
+        </tr>
+        @foreach (var item in Model.Stadiums)
+        {
+            string selectedRow = "";
+            if (item.ID == (int?)ViewData["StadiumsID"])
+            {
+                selectedRow = "success";
+            }
+            <tr class="@selectedRow">
+                <td>
+                    @Html.ActionLink("Select", "Index", new { stadiumsID = item.ID })
+                </td>
+                <td>
+                    @item.Name
+                </td>
+                <td>
+                    @item.Teams
+                </td>
+                <td>
+                    @item.Price
+                </td>
+            </tr>
+        }
+    </table>
+}
