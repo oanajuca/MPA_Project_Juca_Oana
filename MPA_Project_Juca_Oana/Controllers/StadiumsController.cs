@@ -7,9 +7,13 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MPA_Project_Juca_Oana.Data;
 using MPA_Project_Juca_Oana.Models;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace MPA_Project_Juca_Oana.Controllers
 {
+    [Authorize(Roles = "Employee")]
+
     public class StadiumsController : Controller
     {
         private readonly LibraryContext _context;
@@ -20,6 +24,8 @@ namespace MPA_Project_Juca_Oana.Controllers
         }
 
         // GET: Stadiums
+
+        [AllowAnonymous]
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
@@ -74,6 +80,7 @@ namespace MPA_Project_Juca_Oana.Controllers
 
 
         // GET: Stadiums/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Stadiums == null)

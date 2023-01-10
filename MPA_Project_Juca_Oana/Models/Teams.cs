@@ -5,8 +5,8 @@
         public int ID { get; set; }
         public string Name { get; set; }
         public string About { get; set; }
-        public Trainers Traners { get; set; }
+        public Trainers? Traners { get; set; }
 
-        public Players Players { get; set; }
+        public Players? Players { get; set; }
     }
 }
