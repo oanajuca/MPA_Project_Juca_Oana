@@ -15,7 +15,7 @@ namespace MPA_Project_Juca_Oana.Models
 
         public Teams? Teams { get; set; }
         public int? TeamID { get; set; }
-        public ICollection<Orders> Orders { get; set; }
+        public ICollection<Orders>? Orders { get; set; }
 
         public ICollection<StadiumByCity> StadiumByCity { get; set; }
 

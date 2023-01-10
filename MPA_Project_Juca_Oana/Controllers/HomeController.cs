@@ -36,6 +36,10 @@ namespace MPA_Project_Juca_Oana.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+        public IActionResult Chat()
+        {
+            return View();
+        }
         public async Task<ActionResult> Statistics()
         {
             IQueryable<OrderGroup> data =

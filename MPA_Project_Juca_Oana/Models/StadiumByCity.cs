@@ -6,7 +6,7 @@ namespace MPA_Project_Juca_Oana.Models
     {
         public int CityID { get; set; }
         public int StadiumID { get; set; }
-        public City City { get; set; }
-        public Stadiums Stadium { get; set; }
+        public City? City { get; set; }
+        public Stadiums? Stadium { get; set; }
     }
 }

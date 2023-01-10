@@ -7,9 +7,13 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MPA_Project_Juca_Oana.Data;
 using MPA_Project_Juca_Oana.Models;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace MPA_Project_Juca_Oana.Controllers
 {
+    [Authorize(Roles = "Employee")]
+
     public class StadiumsController : Controller
     {
         private readonly LibraryContext _context;
@@ -20,6 +24,8 @@ namespace MPA_Project_Juca_Oana.Controllers
         }
 
         // GET: Stadiums
+
+        [AllowAnonymous]
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
@@ -74,6 +80,7 @@ namespace MPA_Project_Juca_Oana.Controllers
 
 
         // GET: Stadiums/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Stadiums == null)
@@ -96,6 +103,7 @@ namespace MPA_Project_Juca_Oana.Controllers
         // GET: Stadiums/Create
         public IActionResult Create()
         {
+            ViewData["Name"] = new SelectList(_context.Teams, "TeamID", "Name");
             return View();
         }
 
@@ -137,6 +145,7 @@ namespace MPA_Project_Juca_Oana.Controllers
             {
                 return NotFound();
             }
+            ViewData["Name"] = new SelectList(_context.Teams, "TeamID", "Name", stadiums.TeamID);
             return View(stadiums);
         }
 
@@ -155,7 +164,7 @@ namespace MPA_Project_Juca_Oana.Controllers
 
             if (await TryUpdateModelAsync<Stadiums>(stadiumToUpdate,
   "",
-  s => s.Teams, s => s.Name, s => s.Price))
+  s => s.TeamID, s => s.Name, s => s.Price))
             {
                 try
                 {
