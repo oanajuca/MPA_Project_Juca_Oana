@@ -52,15 +52,15 @@
 </table>
 @if (Model.Stadiums != null)
 {
-    <h3>Stadiums by Selected City</h3>
+    <h3>Stadium Tours by Selected City</h3>
     <table class="table">
         <tr>
             <th></th>
             <th>Name</th>
-            <th>Team</th>
+            <th>Country</th>
             <th>Price</th>
         </tr>
-        @foreach (var item in Model.Stadiums)
+        @foreach (var item in Model.Stadiums) 
         {
             string selectedRow = "";
             if (item.ID == (int?)ViewData["StadiumsID"])
@@ -75,7 +75,7 @@
                     @item.Name
                 </td>
                 <td>
-                    @item.Teams
+                    @item.Location
                 </td>
                 <td>
                     @item.Price
@@ -83,4 +83,34 @@
             </tr>
         }
     </table>
+    @if (Model.Orders != null)
+    {
+        <h3> Customers that bought the Selected Tours</h3>
+        <table class="table">
+            <tr>
+                <th> Name</th>
+                <th> Adress</th>
+                <th> Birth Date</th>
+            </tr>
+            @foreach (var item in Model.Orders)
+            {
+                string selectedRow = "";
+                if (item.StadiumID == (int?)ViewData["StadiumID"])
+                {
+                    selectedRow = "success";
+                }
+                <tr class="@selectedRow">
+                    <td>
+                        @item.Customers.Name
+                    </td>
+                    <td>
+                        @item.Customers.Adress
+                    </td>
+                    <td>
+                        @item.Customers.BirthDate
+                    </td>
+                </tr>
+            }
+        </table>
+    }
 }

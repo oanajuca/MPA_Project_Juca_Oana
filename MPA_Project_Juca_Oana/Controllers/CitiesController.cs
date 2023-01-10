@@ -25,14 +25,14 @@ namespace MPA_Project_Juca_Oana.Controllers
         public async Task<IActionResult> Index(int? id, int? stadiumsID)
         {
             var viewModel = new CityIndexData();
-           // viewModel.City = await _context.City
-           // .Include(i => i.StadiumByCity)
-              //  .ThenInclude(i => i.Stadiums)
-           // .ThenInclude(i => i.Orders)
-           // .ThenInclude(i => i.Customers)
-           // .AsNoTracking()
-           // .OrderBy(i => i.Name)
-           // .ToListAsync();
+            viewModel.City = await _context.City_1
+            .Include(i => i.StadiumByCity)
+                .ThenInclude(i => i.Stadium)
+            .ThenInclude(i => i.Orders)
+            .ThenInclude(i => i.Customers)
+            .AsNoTracking()
+            .OrderBy(i => i.CityName)
+            .ToListAsync();
             if (id != null)
             {
                 ViewData["CityID"] = id.Value;
@@ -92,53 +92,113 @@ namespace MPA_Project_Juca_Oana.Controllers
         // GET: Cities/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.City_1 == null)
-            {
-                return NotFound();
-            }
+            
+                if (id == null)
+                {
+                    return NotFound();
+                }
+                var city = await _context.City_1
+                .Include(i => i.StadiumByCity).ThenInclude(i => i.Stadium)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.ID == id);
+                if (city == null)
+                {
+                    return NotFound();
+                }
+                PopulateCityStadiumData(city);
+                return View(city);
 
-            var city = await _context.City_1.FindAsync(id);
-            if (city == null)
+         }
+            private void PopulateCityStadiumData(City city)
             {
-                return NotFound();
+                var allStadiums = _context.Stadiums;
+                var cityStadium = new HashSet<int>(city.StadiumByCity.Select(c => c.StadiumID));
+                var viewModel = new List<CityStadiumData>();
+                foreach (var stad in allStadiums)
+                {
+                    viewModel.Add(new CityStadiumData
+                    {
+                        StadiumID = stad.ID,
+                        Name = stad.Name,
+                        LocatedInCity = cityStadium.Contains(stad.ID)
+                    });
+                }
+                ViewData["Stadiums"] = viewModel;
             }
-            return View(city);
-        }
+        
 
         // POST: Cities/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,CityName")] City city)
+        public async Task<IActionResult> Edit(int? id, string[] selectedStadiums)
         {
-            if (id != city.ID)
+            if (id ==null)
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
+            var cityToUpdate = await _context.City_1
+            .Include(i => i.StadiumByCity)
+            .ThenInclude(i => i.Stadium)
+            .FirstOrDefaultAsync(m => m.ID == id);
+            if (await TryUpdateModelAsync<City>(
+            cityToUpdate,
+            "",
+            i => i.CityName))
             {
+                UpdateStadiumByCity(selectedStadiums, cityToUpdate);
                 try
                 {
-                    _context.Update(city);
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateException /* ex */)
                 {
-                    if (!CityExists(city.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+
+                    ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists, ");
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(city);
+            UpdateStadiumByCity(selectedStadiums, cityToUpdate);
+            PopulateCityStadiumData(cityToUpdate);
+            return View(cityToUpdate);
         }
+        private void UpdateStadiumByCity(string[] selectedStadiums, City cityToUpdate)
+        {
+            if (selectedStadiums == null)
+            {
+                cityToUpdate.StadiumByCity = new List<StadiumByCity>();
+                return;
+            }
+            var selectedStadiumsHS = new HashSet<string>(selectedStadiums);
+            var cityStadium = new HashSet<int>
+            (cityToUpdate.StadiumByCity.Select(c => c.Stadium.ID));
+            foreach (var stadium in _context.Stadiums)
+            {
+                if (selectedStadiumsHS.Contains(stadium.ID.ToString()))
+                {
+                    if (!cityStadium.Contains(stadium.ID))
+                    {
+                        cityToUpdate.StadiumByCity.Add(new StadiumByCity
+                        {
+                            CityID =cityToUpdate.ID,
+                            StadiumID = stadium.ID
+                        });
+                    }
+                }
+                else
+                {
+                    if (cityStadium.Contains(stadium.ID))
+                    {
+                        StadiumByCity stadiumToRemove = cityToUpdate.StadiumByCity.FirstOrDefault(i
+                       => i.StadiumID == stadium.ID);
+                        _context.Remove(stadiumToRemove);
+                    }
+                }
+            }
+        }
+
 
         // GET: Cities/Delete/5
         public async Task<IActionResult> Delete(int? id)

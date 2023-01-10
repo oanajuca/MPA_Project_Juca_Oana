@@ -19,6 +19,33 @@
                 <span asp-validation-for="CityName" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <table>
+                        <tr>
+                            @{
+                                int cnt = 0;
+                                List<MPA_Project_Juca_Oana.Models.ViewModels.CityStadiumData> stadiums =ViewBag.Stadiums;
+                                foreach (var stadium in stadiums)
+                                {
+                                    if (cnt++ % 3 == 0)
+                                    {
+                                    @:</tr><tr>
+                                    }
+                                    @:<td>
+                                        <input type="checkbox"
+                                               name="selectedStadiums"
+                                               value="@stadium.StadiumID"
+                                               @(Html.Raw(stadium.LocatedInCity ?
+                                        "checked=\"checked\"" : "")) />
+                                        @stadium.StadiumID @: @stadium.Name
+                                    @:</td>
+                                }
+                             @:</tr>
+                             }
+                         </table>
+                    </div>
+                </div>
+            <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>

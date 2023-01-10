@@ -96,6 +96,7 @@ namespace MPA_Project_Juca_Oana.Controllers
         // GET: Stadiums/Create
         public IActionResult Create()
         {
+            ViewData["Name"] = new SelectList(_context.Teams, "TeamID", "Name");
             return View();
         }
 
@@ -137,6 +138,7 @@ namespace MPA_Project_Juca_Oana.Controllers
             {
                 return NotFound();
             }
+            ViewData["Name"] = new SelectList(_context.Teams, "TeamID", "Name", stadiums.TeamID);
             return View(stadiums);
         }
 
@@ -155,7 +157,7 @@ namespace MPA_Project_Juca_Oana.Controllers
 
             if (await TryUpdateModelAsync<Stadiums>(stadiumToUpdate,
   "",
-  s => s.Teams, s => s.Name, s => s.Price))
+  s => s.TeamID, s => s.Name, s => s.Price))
             {
                 try
                 {
