@@ -12,7 +12,7 @@ namespace MPA_Project_Juca_Oana.Models
         public int ID { get; set; }
         public string Name { get; set; }
         public string Adress { get; set; }
-        public DateTime? BirthDate { get; set; }
+        public DateTime BirthDate { get; set; }
         public ICollection<Orders>? Orders { get; set; }
     }
 }

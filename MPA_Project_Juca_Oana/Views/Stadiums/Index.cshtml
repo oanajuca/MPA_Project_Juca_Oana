@@ -27,13 +27,13 @@
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Arena Name</a>
             </th>
             <th>
-                 Location
+                Best Player
             </th>
             <th>
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["PriceSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Price</a>
             </th>
             <th>
-                 TeamID
+                <a class="nav-link text-dark" asp-area="" asp-controller="Teams" asp-action="">Team</a>
             </th>
             <th></th>
         </tr>
@@ -51,7 +51,7 @@
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.TeamID)
+                    @Html.DisplayFor(modelItem => item.Teams.Name)
                 </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |

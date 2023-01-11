@@ -44,11 +44,12 @@ namespace MPA_Project_Juca_Oana.Controllers
             ViewData["CurrentFilter"] = searchString;
 
             var stadiums = from b in _context.Stadiums
-                        join a in _context.Teams on b.TeamID equals a.ID
-                        select new Stadiums
-                        {
-                            ID = b.ID,
-                            Name = b.Name,
+                           join a in _context.Teams on b.TeamID equals a.ID
+                           select new Stadiums
+                           {
+                               ID = b.ID,
+                               Name = b.Name,
+                               Location= b.Location,
                             Price = b.Price,
                             Teams = a
                         };

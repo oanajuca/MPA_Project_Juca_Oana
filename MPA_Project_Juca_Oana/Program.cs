@@ -33,14 +33,14 @@ builder.Services.Configure<IdentityOptions>(options => {
 
     builder.Services.AddAuthorization(opts => {
     opts.AddPolicy("OnlyPremium", policy => {
-        policy.RequireClaim("Department", "Premium");
+        policy.RequireClaim("Departament", "Premium");
     });
 });
 
 builder.Services.AddAuthorization(opts => {
     opts.AddPolicy("SysAdmin", policy => {
-        policy.RequireRole("SusAdmin");
-        policy.RequireClaim("Department", "Administration");
+        policy.RequireRole("SysAdmin");
+        policy.RequireClaim("Departament", "Administration");
     });
 });
 builder.Services.ConfigureApplicationCookie(opts =>
