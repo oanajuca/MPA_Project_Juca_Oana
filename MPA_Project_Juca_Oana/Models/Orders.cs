@@ -11,7 +11,7 @@ namespace MPA_Project_Juca_Oana.Models
         public int ID { get; set; }
         public int CustomerID { get; set; }
         public int StadiumID { get; set; }
-        public DateTime? OrderDate { get; set; }
+        public DateTime OrderDate { get; set; }
 
 
         public Customers? Customers { get; set; }

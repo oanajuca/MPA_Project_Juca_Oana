@@ -19,7 +19,7 @@
     </thead>
     <tbody>
 @foreach (var item in Model.City) {
-            {
+            
                 string selectedRow = "";
                 if (item.ID == (int?)ViewData["CityID"])
                 {
@@ -45,7 +45,7 @@
                         <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
                     </td>
                 </tr>
-            }
+            
 
 }
     </tbody>
