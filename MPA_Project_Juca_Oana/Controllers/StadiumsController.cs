@@ -50,15 +50,16 @@ namespace MPA_Project_Juca_Oana.Controllers
                                ID = b.ID,
                                Name = b.Name,
                                Location= b.Location,
-                            Price = b.Price,
-                            Teams = a
-                        };
+                               Price = b.Price,
+                               Teams = a
+                           };
 
 
             if (!String.IsNullOrEmpty(searchString))
             {
                 stadiums = stadiums.Where(s => s.Name.Contains(searchString));
             }
+
 
             switch (sortOrder)
             {
@@ -104,6 +105,18 @@ namespace MPA_Project_Juca_Oana.Controllers
         // GET: Stadiums/Create
         public IActionResult Create()
         {
+            List<SelectListItem> demo = new List<SelectListItem>();
+
+            foreach (var item in _context.Teams)
+            {
+                demo.Add(new SelectListItem { Text= item.Name, Value = item.ID.ToString() });
+            }
+
+            IEnumerable<SelectListItem> test = demo;
+
+            ViewBag.Title = "test";
+            ViewBag.TeamID = test;
+
             ViewData["Name"] = new SelectList(_context.Teams, "TeamID", "Name");
             return View();
         }
@@ -113,16 +126,20 @@ namespace MPA_Project_Juca_Oana.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Price,TeamID")] Stadiums stadiums)
+        public async Task<IActionResult> Create([Bind("Name,Price,TeamID, Location")] Stadiums stadiums)
         {
             try
             {
-            if (ModelState.IsValid)
-            {
-                _context.Add(stadiums);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
+                if (ModelState.IsValid)
+                {
+                    _context.Add(stadiums);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    var txt = ModelState.Select(a => a.Value.Errors).ToList();
+                }
             }
             catch (DbUpdateException /* ex*/)
             {
@@ -134,8 +151,20 @@ namespace MPA_Project_Juca_Oana.Controllers
         }
 
         // GET: Stadiums/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, int a = 0)
         {
+            List<SelectListItem> demo = new List<SelectListItem>();
+
+            foreach (var item in _context.Teams)
+            {
+                demo.Add(new SelectListItem { Text= item.Name, Value = item.ID.ToString() });
+            }
+
+            IEnumerable<SelectListItem> test = demo;
+
+            ViewBag.Title = "test";
+            ViewBag.TeamID = test;
+
             if (id == null || _context.Stadiums == null)
             {
                 return NotFound();
@@ -155,7 +184,7 @@ namespace MPA_Project_Juca_Oana.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditPost(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -199,10 +228,10 @@ namespace MPA_Project_Juca_Oana.Controllers
                 return NotFound();
             }
             if (saveChangesError.GetValueOrDefault())
- {
- ViewData["ErrorMessage"] =
- "Delete failed. Try again";
- }
+            {
+                ViewData["ErrorMessage"] =
+                "Delete failed. Try again";
+            }
             return View(stadiums);
         }
 
@@ -237,7 +266,7 @@ namespace MPA_Project_Juca_Oana.Controllers
 
         private bool StadiumsExists(int id)
         {
-          return _context.Stadiums.Any(e => e.ID == id);
+            return _context.Stadiums.Any(e => e.ID == id);
         }
     }
 }
