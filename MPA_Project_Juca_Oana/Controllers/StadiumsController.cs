@@ -113,7 +113,7 @@ namespace MPA_Project_Juca_Oana.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Price,TeamsID")] Stadiums stadiums)
+        public async Task<IActionResult> Create([Bind("Name,Price,TeamID")] Stadiums stadiums)
         {
             try
             {
@@ -161,11 +161,13 @@ namespace MPA_Project_Juca_Oana.Controllers
             {
                 return NotFound();
             }
-            var stadiumToUpdate = await _context.Stadiums.FirstOrDefaultAsync(s => s.ID == id);
+            var stadiumToUpdate = await _context.Stadiums
+                .Include(i => i.Teams)
+                .FirstOrDefaultAsync(s => s.ID == id);
 
             if (await TryUpdateModelAsync<Stadiums>(stadiumToUpdate,
   "",
-  s => s.TeamID, s => s.Name, s => s.Price))
+  i => i.Teams, s => s.Name, s => s.Price))
             {
                 try
                 {

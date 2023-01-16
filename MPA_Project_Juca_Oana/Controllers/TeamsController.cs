@@ -22,6 +22,7 @@ namespace MPA_Project_Juca_Oana.Controllers
         // GET: Teams
         public async Task<IActionResult> Index()
         {
+           
 
             return View(await _context.Teams.ToListAsync());
         }
